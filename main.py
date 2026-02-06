@@ -1,3 +1,13 @@
+####################################################
+/*
+███████╗ ███████╗██████╗ ██╗  ██╗██╗   ██╗██████╗
+╚══███╔╝ ██╔════╝██╔══██╗██║  ██║╚██╗ ██╔╝██╔══██╗
+  ███╔╝  █████╗  ██████╔╝███████║ ╚████╔╝ ██████╔╝
+ ███╔╝   ██╔══╝  ██╔═══╝ ██╔══██║  ╚██╔╝  ██╔══██╗
+███████╗ ███████╗██║     ██║  ██║   ██║   ██║  ██║
+╚══════╝ ╚══════╝╚═╝     ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝
+*/
+###################################################
 import network
 import esp
 import socket
@@ -26,9 +36,8 @@ def save_passwords(passwords):
 users = load_passwords()
 print("[+] Loaded {} passwords from storage".format(len(users)))
 
-# Configure your AP settings here
 AP_SSID = "Free WiFi"
-AP_PASSWORD = ""  # Leave empty for open network
+AP_PASSWORD = ""  
 
 ap = network.WLAN(network.AP_IF)
 ap.active(True)
